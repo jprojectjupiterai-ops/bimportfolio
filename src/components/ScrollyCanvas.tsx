@@ -15,31 +15,43 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
     offset: ["start start", "end end"]
   });
 
-  // Load images
+  // Load images sequentially to prevent network congestion
   useEffect(() => {
+    let isCancelled = false;
     const loadedImages: HTMLImageElement[] = [];
-    let loadedCount = 0;
 
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      // Format: frame_00_delay-0.076s.png
-      const frameIndex = i.toString().padStart(2, "0");
-      img.src = `/sequence/frame_${frameIndex}_delay-0.076s.png`;
-      
-      img.onload = () => {
-        loadedCount++;
-        // Draw the first frame immediately so the screen isn't black
-        if (i === 0 && canvasRef.current) {
-          const ctx = canvasRef.current.getContext("2d");
-          ctx?.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height);
-        }
+    const loadSequential = async () => {
+      for (let i = 0; i < FRAME_COUNT; i++) {
+        if (isCancelled) break;
         
-        if (loadedCount === FRAME_COUNT) {
-          setImages([...loadedImages]);
-        }
-      };
-      loadedImages.push(img);
-    }
+        await new Promise((resolve) => {
+          const img = new Image();
+          const frameIndex = i.toString().padStart(2, "0");
+          img.src = `/sequence/frame_${frameIndex}_delay-0.076s.png`;
+          
+          img.onload = () => {
+            loadedImages.push(img);
+            if (i === 0 && canvasRef.current) {
+              const ctx = canvasRef.current.getContext("2d");
+              ctx?.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height);
+              setImages([...loadedImages]);
+            } else if (i % 5 === 0 || i === FRAME_COUNT - 1) {
+              // Update state occasionally to allow smooth scrolling as frames load
+              setImages([...loadedImages]);
+            }
+            resolve(true);
+          };
+          
+          img.onerror = () => resolve(false);
+        });
+      }
+    };
+
+    loadSequential();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   // Update canvas on scroll

@@ -16,7 +16,7 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.5, delay: (i % 10) * 0.1 }}
-      className={`group relative bg-muted/30 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-500 ${className}`}
+      className={`group relative bg-muted/30 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-500 min-h-[250px] ${className}`}
       onClick={() => setSelectedItem(item)}
       onContextMenu={(e) => e.preventDefault()}
     >
