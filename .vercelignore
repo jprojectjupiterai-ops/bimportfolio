@@ -1,0 +1,8 @@
+node_modules
+.next
+.git
+/PROJECT WORKS
+/ARCHIVE_UNCURATED
+*.mp4
+*.mkv
+*.avi
