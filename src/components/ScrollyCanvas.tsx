@@ -28,13 +28,14 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
       
       img.onload = () => {
         loadedCount++;
+        // Draw the first frame immediately so the screen isn't black
+        if (i === 0 && canvasRef.current) {
+          const ctx = canvasRef.current.getContext("2d");
+          ctx?.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height);
+        }
+        
         if (loadedCount === FRAME_COUNT) {
-          setImages(loadedImages);
-          // Draw first frame
-          if (canvasRef.current) {
-            const ctx = canvasRef.current.getContext("2d");
-            ctx?.drawImage(loadedImages[0], 0, 0, canvasRef.current.width, canvasRef.current.height);
-          }
+          setImages([...loadedImages]);
         }
       };
       loadedImages.push(img);

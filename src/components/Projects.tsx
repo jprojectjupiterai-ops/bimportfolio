@@ -24,6 +24,7 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
         <img 
           src={item.url} 
           alt={item.name}
+          loading="lazy"
           className="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105 pointer-events-none grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100"
           draggable={false}
           onContextMenu={(e) => e.preventDefault()}
