@@ -102,7 +102,38 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
   return (
     <div className="bg-[#050505] min-h-screen py-32 px-8 md:px-24 font-sans">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-24">
+        {/* Category Navigation Tabs */}
+        <div className="flex flex-wrap gap-6 mb-20 md:justify-start justify-center">
+          {categories.map((category, i) => {
+            const isArch = category.name.includes('ARCHITECTURAL');
+            const isBIM = category.name.includes('BUILDING');
+            const isSite = category.name.includes('SITE');
+            
+            let colorClasses = "border-white/20 text-white/60 hover:bg-white/10 hover:text-white";
+            if (isArch) colorClasses = "border-[#FACC15] text-[#FACC15] hover:bg-[#FACC15]/10 shadow-[0_0_20px_rgba(250,204,21,0.05)] hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]";
+            else if (isBIM) colorClasses = "border-[#06B6D4] text-[#06B6D4] hover:bg-[#06B6D4]/10 shadow-[0_0_20px_rgba(6,182,212,0.05)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]";
+            else if (isSite) colorClasses = "border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444]/10 shadow-[0_0_20px_rgba(239,68,68,0.05)] hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]";
+
+            return (
+              <motion.button
+                key={category.name}
+                initial={{ opacity: 0, y: -20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                onClick={() => {
+                  const el = document.getElementById(category.name);
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className={`px-8 py-3 border border-opacity-50 text-[11px] md:text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-500 backdrop-blur-sm ${colorClasses}`}
+              >
+                {category.name.replace(/_/g, " ")}
+              </motion.button>
+            );
+          })}
+        </div>
+
+        <div className="mb-24 text-center md:text-left">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -126,7 +157,7 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
             const displayCategoryName = category.name.replace(/_/g, " ");
 
             return (
-              <div key={category.name} className="relative">
+              <div key={category.name} id={category.name} className="relative scroll-mt-32">
                 <h3 className="text-3xl md:text-4xl font-normal tracking-[0.2em] uppercase mb-16 text-foreground/90 border-b border-white/10 pb-6">
                   {displayCategoryName}
                 </h3>
