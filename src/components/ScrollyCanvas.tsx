@@ -22,7 +22,7 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image();
       const frameIndex = i.toString().padStart(2, "0");
-      img.src = `/sequence/frame_${frameIndex}_delay-0.076s.png`;
+      img.src = `/sequence/frame_${frameIndex}_delay-0.076s.webp`;
       
       img.onload = () => {
         // Redraw if it's the current frame being requested (fallback to first frame)
@@ -74,47 +74,13 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
     return () => unsubscribe();
   }, [images, scrollYProgress]);
 
-  // Handle resizing the canvas
-  useEffect(() => {
-    const handleResize = () => {
-      if (canvasRef.current) {
-        // Set actual size in memory (scaled to account for extra pixel density)
-        canvasRef.current.width = window.innerWidth;
-        canvasRef.current.height = window.innerHeight;
-        
-        // Redraw current frame if it is fully loaded
-        if (images.length === FRAME_COUNT) {
-          const frameIndex = Math.min(
-            FRAME_COUNT - 1,
-            Math.floor(scrollYProgress.get() * FRAME_COUNT)
-          );
-          const ctx = canvasRef.current.getContext("2d");
-          
-          if (images[frameIndex] && images[frameIndex].complete) {
-            ctx?.drawImage(
-              images[frameIndex],
-              0,
-              0,
-              canvasRef.current.width,
-              canvasRef.current.height
-            );
-          } else if (images[0] && images[0].complete) {
-             ctx?.drawImage(images[0], 0, 0, canvasRef.current.width, canvasRef.current.height);
-          }
-        }
-      }
-    };
-    
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [images, scrollYProgress]);
-
   return (
     <div ref={containerRef} className="relative h-[300vh]">
       <div className="sticky top-0 w-full h-screen overflow-hidden bg-black">
         <canvas
           ref={canvasRef}
+          width={1920}
+          height={1080}
           className="w-full h-full object-cover"
         />
         {/* Overlay gradient for better text readability */}
