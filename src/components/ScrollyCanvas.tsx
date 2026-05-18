@@ -15,43 +15,30 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
     offset: ["start start", "end end"]
   });
 
-  // Load images sequentially to prevent network congestion
+  // Load images concurrently but gracefully handle loading states
   useEffect(() => {
-    let isCancelled = false;
-    const loadedImages: HTMLImageElement[] = [];
+    const newImages: HTMLImageElement[] = [];
 
-    const loadSequential = async () => {
-      for (let i = 0; i < FRAME_COUNT; i++) {
-        if (isCancelled) break;
-        
-        await new Promise((resolve) => {
-          const img = new Image();
-          const frameIndex = i.toString().padStart(2, "0");
-          img.src = `/sequence/frame_${frameIndex}_delay-0.076s.png`;
-          
-          img.onload = () => {
-            loadedImages.push(img);
-            if (i === 0 && canvasRef.current) {
-              const ctx = canvasRef.current.getContext("2d");
-              ctx?.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height);
-              setImages([...loadedImages]);
-            } else if (i % 5 === 0 || i === FRAME_COUNT - 1) {
-              // Update state occasionally to allow smooth scrolling as frames load
-              setImages([...loadedImages]);
-            }
-            resolve(true);
-          };
-          
-          img.onerror = () => resolve(false);
-        });
-      }
-    };
-
-    loadSequential();
-
-    return () => {
-      isCancelled = true;
-    };
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      const img = new Image();
+      const frameIndex = i.toString().padStart(2, "0");
+      img.src = `/sequence/frame_${frameIndex}_delay-0.076s.png`;
+      
+      img.onload = () => {
+        // Redraw if it's the current frame being requested (fallback to first frame)
+        if (i === 0 && canvasRef.current) {
+          const ctx = canvasRef.current.getContext("2d");
+          // Only draw if we haven't scrolled yet
+          if (scrollYProgress.get() === 0) {
+            ctx?.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height);
+          }
+        }
+      };
+      
+      newImages.push(img);
+    }
+    
+    setImages(newImages);
   }, []);
 
   // Update canvas on scroll
@@ -68,7 +55,7 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
       );
 
       // Handle canvas resize on window resize if needed
-      if (canvasRef.current) {
+      if (canvasRef.current && images[frameIndex] && images[frameIndex].complete) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         ctx.drawImage(
           images[frameIndex],
@@ -77,6 +64,10 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
           canvasRef.current.width,
           canvasRef.current.height
         );
+      } else if (canvasRef.current && images[0] && images[0].complete) {
+        // Fallback to frame 0 if current frame isn't loaded yet
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        ctx.drawImage(images[0], 0, 0, canvasRef.current.width, canvasRef.current.height);
       }
     });
 
@@ -91,20 +82,25 @@ export default function ScrollyCanvas({ children }: { children?: React.ReactNode
         canvasRef.current.width = window.innerWidth;
         canvasRef.current.height = window.innerHeight;
         
-        // Redraw current frame
+        // Redraw current frame if it is fully loaded
         if (images.length === FRAME_COUNT) {
           const frameIndex = Math.min(
             FRAME_COUNT - 1,
             Math.floor(scrollYProgress.get() * FRAME_COUNT)
           );
           const ctx = canvasRef.current.getContext("2d");
-          ctx?.drawImage(
-            images[frameIndex],
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.height
-          );
+          
+          if (images[frameIndex] && images[frameIndex].complete) {
+            ctx?.drawImage(
+              images[frameIndex],
+              0,
+              0,
+              canvasRef.current.width,
+              canvasRef.current.height
+            );
+          } else if (images[0] && images[0].complete) {
+             ctx?.drawImage(images[0], 0, 0, canvasRef.current.width, canvasRef.current.height);
+          }
         }
       }
     };
