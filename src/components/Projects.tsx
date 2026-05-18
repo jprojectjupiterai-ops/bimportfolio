@@ -105,14 +105,7 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
         {/* Category Navigation Tabs */}
         <div className="flex flex-wrap gap-6 mb-20 md:justify-start justify-center">
           {categories.map((category, i) => {
-            const isArch = category.name.includes('ARCHITECTURAL');
-            const isBIM = category.name.includes('BUILDING');
-            const isSite = category.name.includes('SITE');
-            
-            let colorClasses = "border-white/20 text-white/60 hover:bg-white/10 hover:text-white";
-            if (isArch) colorClasses = "border-[#FACC15] text-[#FACC15] hover:bg-[#FACC15]/10 shadow-[0_0_20px_rgba(250,204,21,0.05)] hover:shadow-[0_0_30px_rgba(250,204,21,0.2)]";
-            else if (isBIM) colorClasses = "border-[#06B6D4] text-[#06B6D4] hover:bg-[#06B6D4]/10 shadow-[0_0_20px_rgba(6,182,212,0.05)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]";
-            else if (isSite) colorClasses = "border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444]/10 shadow-[0_0_20px_rgba(239,68,68,0.05)] hover:shadow-[0_0_30px_rgba(239,68,68,0.2)]";
+            const colorClasses = "border-white/20 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.02)] hover:shadow-[0_0_25px_rgba(255,255,255,0.1)]";
 
             return (
               <motion.button
