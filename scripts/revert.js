@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const src = "\\\\?\\C:\\Users\\John Lloyd Maulion\\Desktop\\Portfolio\\PROJECT WORKS\\BUILDING INFORMATION MODELING";
+const src = "\\\\?\\C:\\Users\\John Lloyd Maulion\\Videos\\Portfolio\\public\\PROJECT WORKS\\BUILDING INFORMATION MODELING";
 const dest = "\\\\?\\C:\\Users\\John Lloyd Maulion\\Desktop\\Portfolio\\public\\PROJECT WORKS\\BUILDING INFORMATION MODELING";
 
 try {
