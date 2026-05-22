@@ -40,6 +40,15 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
             autoPlay
           />
         </div>
+      ) : item.type === "youtube" ? (
+        <div className="w-full h-full min-h-[250px] relative pointer-events-none bg-zinc-900 overflow-hidden">
+          <img 
+            src={`https://img.youtube.com/vi/${item.url.split('/').pop()?.split('?')[0]}/hqdefault.jpg`} 
+            alt={item.name}
+            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100"
+          />
+          <span className="absolute top-4 right-4 text-[10px] tracking-wider font-bold bg-red-600/90 text-white px-2 py-1 rounded z-10">VIDEO</span>
+        </div>
       ) : (
         <div className="w-full aspect-[4/5] flex items-center justify-center bg-zinc-900 text-white p-6 text-center">
           <span className="font-medium tracking-wide uppercase text-sm leading-relaxed">{item.name}</span>
@@ -50,7 +59,7 @@ export default function Projects({ categories }: { categories: ProjectCategory[]
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-500 flex items-center justify-center">
         <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform scale-90 group-hover:scale-100">
           <div className="bg-white/10 backdrop-blur-md p-4 rounded-full border border-white/20 text-white shadow-[0_0_30px_rgba(255,255,255,0.2)] pointer-events-none flex items-center justify-center">
-            {item.type === "video" ? <Play className="w-6 h-6" /> : <ZoomIn className="w-6 h-6" />}
+            {item.type === "video" || item.type === "youtube" ? <Play className="w-6 h-6" /> : <ZoomIn className="w-6 h-6" />}
           </div>
         </div>
       </div>

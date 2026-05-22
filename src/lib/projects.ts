@@ -67,7 +67,17 @@ function parseDirectory(dirPath: string, publicDir: string): ProjectGroup {
       subGroups.push(parseDirectory(fullPath, publicDir));
     } else {
       const ext = path.extname(file).toLowerCase();
-      if (['.jpg', '.jpeg', '.png', '.pdf', '.mp4', '.webm'].includes(ext)) {
+      if (ext === '.txt') {
+        const content = fs.readFileSync(fullPath, 'utf8').trim();
+        if (content.startsWith('http')) {
+          items.push({
+            name: file.replace(ext, ''),
+            url: content,
+            type: 'youtube',
+            isLogo: false
+          });
+        }
+      } else if (['.jpg', '.jpeg', '.png', '.pdf', '.mp4', '.webm'].includes(ext)) {
         const nameLower = file.toLowerCase();
         let type: ProjectImage['type'] = 'image';
         if (ext === '.pdf') type = 'pdf';

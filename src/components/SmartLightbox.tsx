@@ -59,7 +59,7 @@ export default function SmartLightbox({
               />
             ) : item.type === "youtube" ? (
               <iframe
-                src={item.url.replace('watch?v=', 'embed/')}
+                src={`${item.url.replace('watch?v=', 'embed/')}?autoplay=1`}
                 className="w-full h-full max-h-[85vh] bg-black"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
