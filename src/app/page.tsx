@@ -4,7 +4,7 @@ import Projects from "@/components/Projects";
 import Navbar from "@/components/Navbar";
 import { getProjects } from "@/lib/projects";
 
-export const dynamic = 'force-dynamic';
+
 
 export default function Home() {
   const categories = getProjects();
