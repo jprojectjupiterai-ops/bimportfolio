@@ -75,7 +75,7 @@ export default function Overlay() {
               className="pointer-events-auto flex items-center gap-4 flex-wrap"
             >
               <a 
-                href="/Information_John%20Paul%20Maulion%20CV.pdf" 
+                href="/Information_John_Paul_Maulion_CV.pdf" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-full transition-all duration-300 group"
